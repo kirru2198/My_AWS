@@ -10,7 +10,7 @@ ASSignment-01
 
  2. Connect to the DB using the following ways:
  
-  a. SQL Client for Windows
+   a. SQL Client for Windows
   
-  b. Linux based EC2 Instance
+   b. Linux based EC2 Instance
  
