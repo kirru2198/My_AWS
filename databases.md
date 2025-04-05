@@ -12,7 +12,7 @@ While migrating, you are asked to perform the following tasks:
    - b. Linux based EC2 Instance
 
 ---
-Certainly! Below is a detailed solution to the problem statement provided, including steps for setting up a MariaDB Engine-based RDS database and how to connect to it using a Windows SQL client and a Linux-based EC2 instance.
+Below is a detailed solution to the problem statement provided, including steps for setting up a MariaDB Engine-based RDS database and how to connect to it using a Windows SQL client and a Linux-based EC2 instance.
 
 ---
 
