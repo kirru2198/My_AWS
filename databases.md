@@ -9,6 +9,8 @@ ASSignment-01
  1. Create a MariaDB Engine based RDS Database.
 
  2. Connect to the DB using the following ways:
+ 
   a. SQL Client for Windows
+  
   b. Linux based EC2 Instance
  
