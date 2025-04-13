@@ -168,3 +168,143 @@ Sure! Here's a clear **overview** of both CloudFormation tasks and a summary of 
 ---
 
 Let me know if you'd like me to generate the CloudWatch Event Rule to complete **real-time notifications for every stack step**.
+
+---
+Great question! Let's go over **how you can check and verify** that everything is working correctly — for **both tasks**.
+
+---
+
+## ✅ **Checking CloudFormation Task 1** (S3 bucket creation with versioning):
+
+### ✔️ Option 1: Via AWS Console
+
+1. **Go to S3 Console**:  
+   [https://s3.console.aws.amazon.com/s3](https://s3.console.aws.amazon.com/s3)
+   
+2. **Search for your bucket**:  
+   Look for a bucket named `Intellipaat-<yourname>`. For example: `Intellipaat-JohnDoe`
+
+3. **Click on the bucket**
+
+4. Go to the **"Properties"** tab
+
+5. Scroll down to **“Bucket Versioning”**  
+   Make sure it says: ✅ **Enabled**
+
+---
+
+### ✔️ Option 2: Use AWS CLI (optional)
+
+```bash
+aws s3api get-bucket-versioning --bucket Intellipaat-<yourname>
+```
+
+You should get something like:
+
+```json
+{
+  "Status": "Enabled"
+}
+```
+
+---
+
+## ✅ **Checking CloudFormation Task 2** (SNS notifications):
+
+### ✔️ Step 1: Confirm you got the **subscription email**
+- You should’ve received a **“Confirm subscription”** email from AWS SNS
+- If not, go to the **SNS Console** > **Topics** > Select your topic > check "Subscriptions"
+
+---
+
+### ✔️ Step 2: Check SNS Topic and Subscription
+
+1. Go to the **SNS Console**:  
+   [https://console.aws.amazon.com/sns](https://console.aws.amazon.com/sns)
+
+2. Click on **Topics**, find:  
+   `Intellipaat-StackNotification-<yourname>`
+
+3. Click on the topic and go to the **“Subscriptions”** tab
+
+4. Make sure your email is listed and its status is: ✅ **Confirmed**
+
+---
+
+### ✔️ Step 3: Trigger a Stack Update to Test Notifications
+
+To see if notifications work:
+1. Go back to **CloudFormation**
+2. Select your stack
+3. Click **Update**
+4. Choose **Replace current template**, upload the same file again (even unchanged)
+5. Click through and finish update
+
+☑️ If everything works, you should receive an **email from AWS SNS** about the stack update event.
+
+---
+
+Ah yes — that “No updates are to be performed” message means that CloudFormation looked at your stack and saw that the template hasn't changed, so it didn’t do anything.
+
+But no worries — there are **a few easy ways to force a change** so that the stack updates and triggers the SNS notification.
+
+---
+
+## ✅ Option 1: Make a Small Change to the Template
+
+Edit your YAML template with a **tiny, harmless change** — like adding a tag to the bucket.
+
+### 🔧 Example: Add a Tag to the S3 Bucket
+
+Modify your `MyS3Bucket` resource like this:
+
+```yaml
+MyS3Bucket:
+  Type: AWS::S3::Bucket
+  Properties:
+    BucketName: !Sub Intellipaat-${YourName}
+    VersioningConfiguration:
+      Status: Enabled
+    Tags:
+      - Key: Updated
+        Value: True
+```
+
+This change won’t break anything — but it **will force a stack update**.
+
+---
+
+## ✅ Option 2: Add a Dummy Resource
+
+If you don’t want to touch your S3 config, just add a fake/dummy resource like a **CloudFormation WaitConditionHandle**.
+
+```yaml
+DummyHandle:
+  Type: AWS::CloudFormation::WaitConditionHandle
+```
+
+This resource won’t actually do anything, but it will force a change.
+
+---
+
+## ✅ Deploying the Update
+
+Once you’ve made your small change:
+
+1. Go to **CloudFormation > Select your stack**
+2. Click **Update**
+3. Choose **“Replace current template”** and upload the new version
+4. Click through and **Create/update**
+
+---
+
+## ✅ Then Check for Notifications
+
+Once the update starts, you should:
+
+- Receive **one or more emails** from SNS during the stack update process
+- See progress in **CloudFormation Events tab**
+
+---
+
+Want me to send you a modified YAML template with this small change added?
