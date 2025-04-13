@@ -7,80 +7,129 @@ You work for XYZ Corporation. Your team is tasked with deploying similar archite
 1. Use the template from **CloudFormation Task 1**.
 2. Add a notification to the CloudFormation stack using **SNS** so that you receive an email notification for every step of the stack creation process.
 
+--- 
+Great! Let’s walk through the **step-by-step process** to complete both CloudFormation tasks. This will include writing a CloudFormation YAML template and setting up an SNS topic with email notifications.
+
 ---
-To solve this problem, you'll need to modify a CloudFormation template to include an SNS (Simple Notification Service) topic. This will send email notifications for every step of the stack creation process.
 
-The solution involves these steps:
+## ✅ **CloudFormation Task 1: Create S3 Bucket with Versioning**
 
-1. **Create an SNS Topic**: This is where the notifications will be sent.
-2. **Subscribe an Email Address to the SNS Topic**: You'll need to subscribe an email to the SNS topic so you can receive notifications.
-3. **Modify CloudFormation Template to Use the SNS Topic**: Integrate this SNS topic with CloudFormation stack events so that notifications are triggered when the stack goes through different creation phases.
+### Step 1: Create a CloudFormation YAML Template
 
-Below is an example CloudFormation YAML template that implements this:
+Create a file named `s3-bucket.yml` with the following content:
 
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'CloudFormation Stack with SNS notifications'
+Description: Create an S3 bucket with versioning enabled
+
+Parameters:
+  YourName:
+    Type: String
+    Description: Enter your name for the bucket name (Intellipaat-<yourname>)
 
 Resources:
-  # Step 1: Create an SNS Topic for notifications
-  StackCreationNotificationTopic:
-    Type: 'AWS::SNS::Topic'
-    Properties: 
-      DisplayName: 'StackCreationNotificationTopic'
-      TopicName: 'StackCreationNotifications'
-
-  # Step 2: Subscribe an Email Address to the SNS Topic
-  StackCreationEmailSubscription:
-    Type: 'AWS::SNS::Subscription'
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
     Properties:
-      Endpoint: 'youremail@example.com'  # Replace with your email address
-      Protocol: 'email'
-      TopicArn: !Ref StackCreationNotificationTopic
-
-  # Step 3: Set Stack Notification Configuration for CloudFormation Events
-  StackEvents:
-    Type: 'AWS::CloudFormation::Stack'
-    Properties: 
-      StackName: 'MyStack'
-      NotificationARNs: 
-        - !Ref StackCreationNotificationTopic
+      BucketName: !Sub "intellipaat-${YourName}"
+      VersioningConfiguration:
+        Status: Enabled
 
 Outputs:
-  SNSNotificationTopic:
-    Description: 'SNS Topic ARN for Stack Creation Notifications'
-    Value: !Ref StackCreationNotificationTopic
+  BucketName:
+    Description: Name of the created S3 bucket
+    Value: !Ref MyS3Bucket
 ```
 
-### Explanation of Key Sections:
+### Step 2: Deploy the Stack
 
-1. **SNS Topic Creation (`StackCreationNotificationTopic`)**:
-   - This creates an SNS topic that will be used to send notifications.
-   - The `DisplayName` is a friendly name for the topic (can be anything you choose).
-   
-2. **SNS Subscription (`StackCreationEmailSubscription`)**:
-   - This subscribes your email (`youremail@example.com`) to the SNS topic. Replace `youremail@example.com` with your actual email address.
-   - When the SNS topic is triggered, an email will be sent to this address.
-   
-3. **CloudFormation Notification Integration (`StackEvents`)**:
-   - The `NotificationARNs` property in this section integrates the SNS topic with the CloudFormation stack.
-   - Whenever there is a status change in the stack (for example, `CREATE_IN_PROGRESS`, `CREATE_FAILED`, etc.), CloudFormation will publish the events to the SNS topic.
-   
-4. **Outputs Section (`SNSNotificationTopic`)**:
-   - This outputs the ARN of the SNS topic, which can be useful for debugging or reusing in other parts of the template.
+1. Go to AWS CloudFormation console.
+2. Click **Create stack > With new resources (standard)**.
+3. Choose **Template is ready**, and upload the `s3-bucket.yml`.
+4. Click **Next**.
+5. Enter stack name (e.g., `S3BucketStack`) and input your name for the parameter.
+6. Click through the rest of the steps and click **Create stack**.
 
-### Steps to Deploy:
+---
 
-1. **Save this template** as a `.yaml` file, e.g., `cloudformation_with_sns_notifications.yaml`.
-2. **Deploy the CloudFormation stack** via AWS Console, CLI, or SDKs:
-   - Using AWS Console, go to **CloudFormation** > **Create Stack** > **Upload a template file**.
-   - In the **Upload Template** section, choose the template file and proceed with the stack creation.
+## ✅ **CloudFormation Task 2: Add SNS Notifications for Stack Events**
 
-3. **Confirm the Subscription**:
-   - You will receive an email asking to confirm the subscription. Make sure to confirm it so that you can receive notifications.
+### Step 1: Modify the Template from Task 1
 
-4. **Monitor Notifications**:
-   - After the stack is created, you will receive an email notification each time the stack changes state (e.g., when it starts creating, completes, or fails).
+Create a new file `s3-bucket-with-sns.yml` and update as follows:
 
-### Conclusion:
-This template creates an SNS topic, subscribes an email address to it, and integrates the SNS topic with CloudFormation to receive notifications at every step of the stack creation process. Make sure to replace the placeholder email address with your own.
+```yaml
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create S3 bucket with versioning and SNS notifications
+
+Parameters:
+  YourName:
+    Type: String
+    Description: Enter your name for the bucket name (Intellipaat-<yourname>)
+  EmailAddress:
+    Type: String
+    Description: Email address to receive notifications
+
+Resources:
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "intellipaat-${YourName}"
+      VersioningConfiguration:
+        Status: Enabled
+
+  MySNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: !Ref EmailAddress
+          Protocol: email
+
+  TopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref MySNSTopic
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: "sns:Publish"
+            Resource: "*"
+
+Outputs:
+  BucketName:
+    Description: Name of the created S3 bucket
+    Value: !Ref MyS3Bucket
+  SNSTopicARN:
+    Description: ARN of the SNS topic
+    Value: !Ref MySNSTopic
+```
+
+> 💡 This stack sets up the S3 bucket and an SNS topic that emails you when messages are published to it. It won’t automatically notify for **each stack event**, but this is the CloudFormation-level implementation.
+
+### Step 2: Deploy the Stack
+
+1. Go to AWS CloudFormation.
+2. Click **Create stack > With new resources (standard)**.
+3. Upload the new `s3-bucket-with-sns.yml`.
+4. Enter stack name (e.g., `S3BucketWithSNSNotification`).
+5. Enter your name and a valid **email address** for the `EmailAddress` parameter.
+6. Click through and **create** the stack.
+
+### Step 3: Confirm the Email Subscription
+
+Check your email inbox and **confirm the subscription** to the SNS topic.
+
+---
+
+## Optional: Get Notifications for CloudFormation Stack Events (Extra)
+
+To receive actual **stack event** notifications (not just SNS from resources in the stack), you must:
+
+1. Create a **CloudWatch Event Rule** that triggers on CloudFormation events.
+2. Use that rule to send notifications via SNS.
+
+Let me know if you'd like that advanced setup too — happy to walk you through!
+
+---
