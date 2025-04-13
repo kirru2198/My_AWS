@@ -133,3 +133,38 @@ To receive actual **stack event** notifications (not just SNS from resources in 
 Let me know if you'd like that advanced setup too — happy to walk you through!
 
 ---
+
+Sure! Here's a clear **overview** of both CloudFormation tasks and a summary of the steps happening in the code:
+
+---
+
+## ✅ **CloudFormation Task 1 – Overview**
+### 🎯 Goal:
+- Create an S3 bucket named `intellipaat-<yourname>`.
+- Enable versioning on that bucket.
+
+### 🔧 Code Summary:
+- **Parameter**: Takes your name as input to generate a custom bucket name.
+- **Resource**: Creates an `AWS::S3::Bucket`.
+- **Versioning**: Enabled via the `VersioningConfiguration` property.
+- **Output**: Displays the bucket name after stack creation.
+
+---
+
+## ✅ **CloudFormation Task 2 – Overview**
+### 🎯 Goal:
+- Extend the template from Task 1 to include **SNS notifications** for CloudFormation stack events.
+
+### 🔧 Code Summary:
+- **Uses previous template**: Reuses the S3 bucket creation and versioning logic.
+- **Adds SNS Topic**:
+  - Creates an `AWS::SNS::Topic`.
+  - Subscribes an email address to it.
+- **Adds SNS Topic Policy**: Grants permissions for publishing.
+- **Notification Setup**: You receive an email to confirm the subscription.
+  
+> ⚠️ *Note*: This template sets up SNS and subscription but does **not** automatically notify for **every step of the stack creation** (you'd need CloudWatch Events for that). Want to include that next?
+
+---
+
+Let me know if you'd like me to generate the CloudWatch Event Rule to complete **real-time notifications for every stack step**.
