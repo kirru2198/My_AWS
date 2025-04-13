@@ -25,7 +25,7 @@ Resources:
   MyS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub 'intellipaat-${kiran}'
+      BucketName: !Sub 'intellipaat-${UserName}'
       VersioningConfiguration:
         Status: Enabled
 
