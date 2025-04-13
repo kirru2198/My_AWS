@@ -306,5 +306,3 @@ Once the update starts, you should:
 - See progress in **CloudFormation Events tab**
 
 ---
-
-Want me to send you a modified YAML template with this small change added?
