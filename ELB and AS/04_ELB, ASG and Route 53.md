@@ -3,8 +3,9 @@
  
 Tasks To Be Performed:
  1. Manage the scaling requirements of the company by:
- a. Deploying multiple compute resources on the cloud as soon as the load increases and the CPU utilization exceeds 80%
- b. Removing the resources when the CPU utilization goes under 60%
+ - a. Deploying multiple compute resources on the cloud as soon as the load increases and the CPU utilization exceeds 80%
+ - b. Removing the resources when the CPU utilization goes under 60%
+ 
  2. Create a load balancer to distribute the load between compute resources.
  3. Route the traffic to the company’s domain.
 
