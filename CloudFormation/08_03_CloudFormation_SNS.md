@@ -306,3 +306,144 @@ Once the update starts, you should:
 - See progress in **CloudFormation Events tab**
 
 ---
+Thanks for the detailed follow-up! Since you **did not receive the email** after the CloudFormation stack update, let’s troubleshoot step-by-step to make sure everything is working.
+
+---
+
+## 🛠️ Step-by-Step Troubleshooting for SNS Email Not Received
+
+---
+
+### ✅ **1. Did you Confirm the Subscription Email?**
+
+When the stack was first created or updated with the SNS topic:
+
+- You should have received an email from **"AWS Notifications"** asking you to **confirm the subscription**
+- Subject line: `"AWS Notification - Subscription Confirmation"`
+- It contains a link to **Confirm Subscription**
+
+👉 If you **didn’t click the confirm link**, you **won’t receive any notifications**
+
+---
+
+### 🔎 How to Check This:
+
+1. Go to **AWS SNS Console**:  
+   [https://console.aws.amazon.com/sns/v3/home#/topics](https://console.aws.amazon.com/sns/v3/home#/topics)
+
+2. Click on your SNS topic (you should see something like `arn:aws:sns:region:account-id:...`)
+
+3. Click the **"Subscriptions"** tab
+
+4. Check the **status** next to your email:
+   - ✅ **Confirmed** = You should get notifications
+   - ❌ **Pending confirmation** = You need to check your inbox and click the link
+
+> 🔁 If the subscription is still **pending**, you can delete and recreate it manually or just re-run the stack.
+
+---
+
+### ✅ **2. Is CloudFormation Actually Sending Notifications?**
+
+CloudFormation **doesn’t automatically send SNS notifications for every event** unless you explicitly set it to in the **stack configuration** using the `NotificationARNs` property **outside the Resources section** — which your current template doesn’t have.
+
+That means the SNS topic is created and subscribed, but CloudFormation is **not publishing any events to it.**
+
+---
+
+## 🧠 Fix: Add `NotificationARNs` to Stack Properties
+
+You have two options:
+
+---
+
+### ✅ **Option 1: Specify the SNS Topic ARN When Creating/Updating the Stack (via Console)**
+
+When updating the stack via the AWS Console:
+
+1. On the **"Configure stack options"** page
+2. Scroll to **"Advanced options"**
+3. Under **"SNS topic ARN for notifications"**
+4. Paste the ARN of the topic created (e.g., `arn:aws:sns:us-east-1:123456789012:MySNSTopic`)
+5. Continue to update the stack
+
+---
+
+### ✅ **Option 2: Add `NotificationARNs` in the Template**
+
+If you're deploying via CLI or template-only and want to automate this, you must add `NotificationARNs` to your template **like this** (outside `Resources`):
+
+```yaml
+NotificationARNs:
+  - !Ref MySNSTopic
+```
+
+### Example:
+
+```yaml
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create S3 bucket with versioning and SNS notifications
+
+Parameters:
+  YourName:
+    Type: String
+    Description: Your name to be appended to the S3 bucket name
+  EmailAddress:
+    Type: String
+    Description: Email address to receive notifications
+
+NotificationARNs:
+  - !Ref MySNSTopic
+
+Resources:
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "intellipaat-${YourName}-${AWS::AccountId}"
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Updated
+          Value: True
+
+  MySNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      Subscription:
+        - Endpoint: !Ref EmailAddress
+          Protocol: email
+
+  TopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref MySNSTopic
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: "sns:Publish"
+            Resource: !Ref MySNSTopic
+
+Outputs:
+  BucketName:
+    Description: Name of the created S3 bucket
+    Value: !Ref MyS3Bucket
+  SNSTopicARN:
+    Description: ARN of the SNS topic
+    Value: !Ref MySNSTopic
+```
+
+---
+
+## ✅ Final Checklist
+
+| Checkpoint | Status |
+|------------|--------|
+| Subscription email received and confirmed | ✅ / ❌ |
+| Email status in SNS is “Confirmed” | ✅ / ❌ |
+| SNS topic ARN is provided to CloudFormation during update | ✅ / ❌ |
+| Your email didn’t land in **spam/junk** | ✅ / ❌ |
+
+---
