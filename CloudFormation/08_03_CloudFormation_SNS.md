@@ -31,7 +31,7 @@ Resources:
   MyS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "intellipaat-${YourName}"
+      BucketName: !Sub "intellipaat-${YourName}-${AWS::AccountId}"
       VersioningConfiguration:
         Status: Enabled
 
@@ -74,7 +74,7 @@ Resources:
   MyS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "intellipaat-${YourName}"
+      BucketName: !Sub "intellipaat-${YourName}-${AWS::AccountId}"
       VersioningConfiguration:
         Status: Enabled
 
@@ -262,7 +262,7 @@ Modify your `MyS3Bucket` resource like this:
 MyS3Bucket:
   Type: AWS::S3::Bucket
   Properties:
-    BucketName: !Sub Intellipaat-${YourName}
+    BucketName: !Sub "intellipaat-${YourName}-${AWS::AccountId}"
     VersioningConfiguration:
       Status: Enabled
     Tags:
