@@ -25,7 +25,7 @@ Description: Create an S3 bucket with versioning enabled
 Parameters:
   YourName:
     Type: String
-    Description: Enter your name for the bucket name (Intellipaat-<yourname>)
+    Description: kiran
 
 Resources:
   MyS3Bucket:
@@ -65,10 +65,10 @@ Description: Create S3 bucket with versioning and SNS notifications
 Parameters:
   YourName:
     Type: String
-    Description: Enter your name for the bucket name (Intellipaat-<yourname>)
+    Description: kiran
   EmailAddress:
     Type: String
-    Description: Email address to receive notifications
+    Description: kirru2198@gmail.com
 
 Resources:
   MyS3Bucket:
