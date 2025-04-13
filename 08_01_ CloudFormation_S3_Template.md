@@ -14,20 +14,25 @@ To create an AWS CloudFormation template that deploys an S3 bucket named `Intell
 
 ```yaml
 AWSTemplateFormatVersion: '2010-09-09'
-Description: CloudFormation template to create an S3 bucket with versioning enabled
+Description: CloudFormation Template to create an S3 bucket with versioning enabled
+
+Parameters:
+  UserName:
+    Type: String
+    Description: kiran
 
 Resources:
-  S3Bucket:
+  MyS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub 'Intellipaat-${AWS::AccountId}'
+      BucketName: !Sub 'intellipaat-${kiran}'
       VersioningConfiguration:
         Status: Enabled
 
 Outputs:
-  S3BucketName:
-    Description: Name of the S3 bucket
-    Value: !Ref S3Bucket
+  BucketName:
+    Description: Name of the created S3 bucket
+    Value: !Ref MyS3Bucket
 ```
 
 ### Explanation:
