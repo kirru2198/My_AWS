@@ -6,9 +6,6 @@
  2. Upload 5 objects with different file extensions.
 
 ---
-To implement S3 for XYZ Corporation's application and meet the outlined requirements, here's how you can proceed using AWS S3 via the AWS Management Console or programmatically with the AWS CLI or SDKs (like Python with `boto3`).
-
----
 
 ## ✅ Step-by-Step Solution
 
@@ -22,7 +19,7 @@ To implement S3 for XYZ Corporation's application and meet the outlined requirem
 3. Click on **Create bucket**.
 4. Enter a unique bucket name (e.g., `xyzcorp-file-storage`).
 5. Choose a region (e.g., `us-east-1`).
-6. Uncheck **Block all public access** if public sharing is needed (can be configured per object later too).
+6. Uncheck **Block all public access** if public sharing is needed (can be configured per object later too). (= you can change the settings for each file later too.")
 7. Click **Create Bucket**.
 
 ---
