@@ -146,3 +146,127 @@ We'll use AWS **IAM policy JSON** to define these permissions.
 | Attached **Policy Number 2** to **Ops Team**                | ✅ Completed |
 
 ---
+To accomplish this using **AWS IAM (Identity and Access Management)** in **Visual Editor (Visual Mode)** within the AWS Console, here's a **step-by-step guide** for creating and attaching the two policies to the `Dev Team` and `Ops Team` IAM groups:
+
+---
+
+## ✅ **Policy Number 1 – Dev Team**
+
+### 🎯 Permissions:
+- ✅ Full access to **S3**
+- ✅ Only ability to **create EC2 instances**
+- ✅ Full access to **RDS**
+
+---
+
+### 👣 Steps to Create Policy 1:
+
+1. Go to **IAM Console > Policies > Create policy**
+2. Choose **Visual editor**
+3. Click **Service**, and add the following:
+
+#### **S3 – All Access**
+- Service: **S3**
+- Actions: **All S3 actions** (Select `All S3 actions`)
+- Resources: **All resources**
+
+---
+
+#### **EC2 – Only Create Instances**
+- Service: **EC2**
+- Actions: Only select:
+  - `RunInstances`
+- Resources: **All resources**
+
+---
+
+#### **RDS – Full Access**
+- Service: **RDS**
+- Actions: **All RDS actions**
+- Resources: **All resources**
+
+---
+
+4. Click **Next**, name the policy:
+   - **Name**: `DevTeam-FullS3-RDS-CreateEC2`
+   - **Description**: "Full access to S3 and RDS, create-only for EC2"
+5. Click **Create policy**
+
+---
+
+### 📎 Attach Policy 1 to Dev Team:
+
+1. Go to **IAM > Groups > Dev Team**
+2. Choose **Permissions > Add permissions > Attach policies**
+3. Search for `DevTeam-FullS3-RDS-CreateEC2`
+4. Select it and click **Attach policy**
+
+---
+
+## ✅ **Policy Number 2 – Ops Team**
+
+### 🎯 Permissions:
+- ✅ Full access to **CloudWatch** and **Billing**
+- ✅ Only **List** access for EC2 and S3
+
+---
+
+### 👣 Steps to Create Policy 2:
+
+1. Go to **IAM Console > Policies > Create policy**
+2. Choose **Visual editor**
+3. Click **Service**, and add the following:
+
+#### **CloudWatch – Full Access**
+- Service: **CloudWatch**
+- Actions: **All CloudWatch actions**
+- Resources: **All resources**
+
+---
+
+#### **Billing – Full Access**
+- Service: **Billing**
+- Actions: **All Billing actions**
+- Resources: **All resources**
+- ✅ *Note*: To grant access to Billing, user **must have root permissions** or billing permissions must be enabled for IAM users.
+
+---
+
+#### **S3 – List Only**
+- Service: **S3**
+- Actions:
+  - `ListAllMyBuckets`
+  - `ListBucket`
+- Resources: **All resources**
+
+---
+
+#### **EC2 – List Only**
+- Service: **EC2**
+- Actions:
+  - `DescribeInstances`
+  - `DescribeVolumes`
+  - `DescribeImages`
+  - (Optional: Add others under "Describe*")
+- Resources: **All resources**
+
+---
+
+4. Click **Next**, name the policy:
+   - **Name**: `OpsTeam-Monitoring-ListEC2S3`
+   - **Description**: "Full access to monitoring/billing, list-only for EC2 & S3"
+5. Click **Create policy**
+
+---
+
+### 📎 Attach Policy 2 to Ops Team:
+
+1. Go to **IAM > Groups > Ops Team**
+2. Choose **Permissions > Add permissions > Attach policies**
+3. Search for `OpsTeam-Monitoring-ListEC2S3`
+4. Select it and click **Attach policy**
+
+---
+
+✅ **Done!**  
+You've now created and attached two custom IAM policies using the **Visual Editor**, precisely scoped for your Dev and Ops teams.
