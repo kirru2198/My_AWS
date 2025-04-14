@@ -35,33 +35,17 @@ Explanation:
 - **FifoQueue**: Set to `true` to specify that this is a FIFO queue.
 - **ContentBasedDeduplication**: Set to `true` to enable deduplication based on the content of the message (AWS will automatically deduplicate messages with the same content sent within 5 minutes).
 
-#### Testing FIFO Queue
+## Step 2: Test by Sending Messages
+1. After the queue is created, click its name to open the queue details.
+2. Under the "Send and receive messages" tab:
+- Enter a Message body (e.g., "Hello from FIFO queue!")
+- Enter a Message group ID (required for FIFO queues, e.g., "testGroup1").
+- Click Send message.
 
-1. **Deploy the CloudFormation stack**:
-   - Use the AWS Console, AWS CLI, or AWS SDK to deploy the CloudFormation stack with the template above.
-   - For CLI, you can use:
-     ```bash
-     aws cloudformation create-stack --stack-name MyFifoQueueStack --template-body file://fifo-queue-template.yaml
-     ```
-
-2. **Send a message to the FIFO queue**:
-   After the stack is created, you can send messages to the FIFO queue for testing.
-
-   - Get the ARN (URL) of the FIFO queue:
-     ```bash
-     aws sqs get-queue-url --queue-name MyFifoQueue.fifo
-     ```
-
-   - Send a message:
-     ```bash
-     aws sqs send-message --queue-url <your-fifo-queue-url> --message-body "This is a test message" --message-group-id "test-group"
-     ```
-
-3. **Verify the message**:
-   To confirm that the message was sent successfully:
-   ```bash
-   aws sqs receive-message --queue-url <your-fifo-queue-url>
-   ```
+3. To verify:
+- Scroll down and click Poll for messages to receive messages.
+- You should see the message you just sent.
+✅ FIFO queue creation and testing complete.
 
 ### Part 2: Register Your Mail in SES and Send a Test Email
 
