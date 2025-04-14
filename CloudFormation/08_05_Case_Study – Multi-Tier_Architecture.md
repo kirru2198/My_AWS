@@ -123,11 +123,19 @@ Resources:
       CidrBlock: 10.0.2.0/24
       VpcId: !Ref VPC
 
-  PrivateDBSubnet:
+  PrivateDBSubnetA:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: 10.0.3.0/24
       VpcId: !Ref VPC
+      AvailabilityZone: us-east-1a
+  
+  PrivateDBSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.4.0/24
+      VpcId: !Ref VPC
+      AvailabilityZone: us-east-1b
 
   WebSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -170,7 +178,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-0c55b159cbfafe1f0  # Update to your region
+      ImageId: ami-00a929b66ed6e0de6  # Update to your region
       SubnetId: !Ref PublicSubnet
       SecurityGroupIds: [!Ref WebSecurityGroup]
 
@@ -178,7 +186,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-0c55b159cbfafe1f0
+      ImageId: ami-00a929b66ed6e0de6
       SubnetId: !Ref PrivateAppSubnet
       SecurityGroupIds: [!Ref AppSecurityGroup]
 
@@ -188,8 +196,9 @@ Resources:
     Properties:
       DBInstanceIdentifier: dev-db
       AllocatedStorage: 20
-      DBInstanceClass: db.t2.micro
+      DBInstanceClass: db.t3.micro
       Engine: MySQL
+      EngineVersion: 8.0.40
       MasterUsername: admin
       MasterUserPassword: MySecurePassword123
       VPCSecurityGroups: [!Ref DBSecurityGroup]
@@ -202,18 +211,19 @@ Resources:
     Properties:
       DBSubnetGroupDescription: Subnet group for RDS
       SubnetIds:
-        - !Ref PrivateDBSubnet
+        - !Ref PrivateDBSubnetA
+        - !Ref PrivateDBSubnetB
 
   HostedZone:
     Type: AWS::Route53::HostedZone
     Properties:
-      Name: example.com.
+      Name: yourcompany.dev.
 
   WebDNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: example.com.
-      Name: web.example.com.
+      HostedZoneName: yourcompany.dev.
+      Name: web.yourcompany.dev.
       Type: A
       TTL: 300
       ResourceRecords:
