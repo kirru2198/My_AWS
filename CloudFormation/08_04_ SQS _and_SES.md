@@ -45,6 +45,7 @@ Explanation:
 3. To verify:
 - Scroll down and click Poll for messages to receive messages.
 - You should see the message you just sent.
+
 ✅ FIFO queue creation and testing complete.
 
 ---
