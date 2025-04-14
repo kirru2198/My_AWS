@@ -5,105 +5,121 @@
  1. Create a role which only lets user1 and user2 from task 1 to have complete access to VPCs and DynamoDB.
  2. Login into user1 and shift to the role to test out the feature.
 
- ---
- To implement the solution for **XYZ Corporation** that allows **User1** and **User2** to have complete access to **VPCs** and **DynamoDB**, we'll follow the steps below. This includes creating a role, assigning permissions, and testing by logging in as **User1** and switching to the role.
+---
 
-### **Solution Steps:**
+## ✅ **Objective Recap:**
+- ✅ Create a role that:
+  - Can **only** be assumed by `user1` and `user2`
+  - Grants **full access** to **VPC** and **DynamoDB**
+- ✅ Test by logging in as `user1` and switching to the new role
 
 ---
 
-### **Task 1: Create a Role with Specific Permissions (VPCs and DynamoDB)**
+## 👣 Step-by-Step Guide (Visual Mode)
 
-#### Step 1: Create an IAM Role
+### 🔷 Step 1: Create the Role
 
-1. **Login to AWS Console** and navigate to **IAM**.
-2. On the left sidebar, click **Roles** and then click **Create role**.
-3. Under **Select type of trusted entity**, choose **AWS service**.
-4. Choose **EC2** (or choose **Another AWS account** if you want to specifically allow User1 and User2 access).
-5. **Permissions**: You can directly add inline policies or attach managed policies later, but for this case, we will create a custom inline policy.
+1. Go to the **IAM Console**
+2. In the left menu, click **Roles > Create role**
+3. **Trusted Entity Type**: Select **AWS Account**
+4. Choose **This account**
+5. Scroll down and **check the box**: "Require external ID" → Leave it **unchecked**
+6. Click **Next**
 
 ---
 
-#### Step 2: Create a Custom Policy for VPC and DynamoDB Access
+### 🔷 Step 2: Attach Permissions
 
-1. Under **Permissions**, click **Create policy**.
-2. Go to the **JSON** tab and paste the following policy JSON to allow complete access to **VPCs** and **DynamoDB**:
+1. In the **Add permissions** screen:
+2. Click **Create policy** (this opens in a new tab)
+
+#### ✅ In the new tab, do the following:
+1. Select **Visual editor**
+2. **Service**: Add **EC2** and **DynamoDB**
+3. Select **All EC2 actions** (for VPC control, EC2 covers VPC APIs like `CreateVpc`, `DescribeVpcs`, etc.)
+4. Select **All DynamoDB actions**
+5. **Resources**: Select **All resources**
+6. Click **Next**
+7. Name the policy: `FullAccess-VPC-DynamoDB`
+8. Click **Create policy**
+
+⬅️ Go back to the role creation tab.
+
+9. Click **Refresh**, search for and attach `FullAccess-VPC-DynamoDB`
+10. Click **Next**
+
+---
+
+### 🔷 Step 3: Name and Tag Role
+
+- **Role Name**: `SwitchRole-VPC-DynamoDB`
+- (Optional) Add a tag: `Project: SecurityAudit`
+- Click **Create role**
+
+---
+
+### 🔷 Step 4: Trust Relationship – Limit to `user1` and `user2`
+
+Now we’ll edit the **trust policy** to allow **only `user1` and `user2` to assume this role**.
+
+1. Go to **IAM > Roles > SwitchRole-VPC-DynamoDB**
+2. Select the **Trust relationships** tab
+3. Click **Edit trust policy**
+
+Replace the default trust policy with this:
 
 ```json
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": "ec2:DescribeVpcs",
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": "dynamodb:*",
-      "Resource": "*"
-    }
-  ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Principal": {
+				"AWS": [
+					"arn:aws:iam::445567101219:user/Dev1",
+					"arn:aws:iam::445567101219:user/Dev2"
+				]
+			},
+			"Action": "sts:AssumeRole"
+		}
+	]
 }
 ```
 
-3. Click **Review policy**. Give the policy a name like `VPCDynamoDBFullAccessPolicy`.
-4. Click **Create policy**.
+> 🧠 Replace `<account-id>` with your **12-digit AWS Account ID**
+
+Click **Update policy**.
 
 ---
 
-#### Step 3: Attach the Policy to the Role
+## 🧪 Step 5: Test by Switching Roles as `user1`
 
-1. After creating the policy, return to the **Create role** wizard in IAM.
-2. Choose **Attach policies directly**, search for the policy `VPCDynamoDBFullAccessPolicy`, and select it.
-3. Click **Next** and give the role a name, such as `VPCDynamoDBRole`.
-4. Click **Create role**.
+### Login as `user1`:
 
----
+1. Login to AWS Console as `user1`
+2. In the top-right corner, click your name → **Switch Role**
+3. Fill in the details:
+   - **Account ID**: `<your account id>`
+   - **Role name**: `SwitchRole-VPC-DynamoDB`
+   - (Optional) Display name / color
+4. Click **Switch Role**
 
-### **Task 2: Allow User1 and User2 to Assume the Role**
+You are now acting as `user1` assuming the role!
 
-#### Step 1: Attach Role to User1 and User2
+### ✅ Test It Out
+Try to:
+- Navigate to **VPC dashboard** → Create a VPC
+- Navigate to **DynamoDB** → Create a table
 
-1. Go to **IAM** and click **Users** on the left sidebar.
-2. Select **User1** and click on **Add permissions**.
-3. Choose **Attach policies directly** and search for the role `VPCDynamoDBRole`.
-4. Select the policy and click **Next: Review** and then **Add permissions**.
-
-Repeat the same process for **User2** to ensure both users can assume this role.
-
----
-
-### **Task 3: Login as User1 and Switch to the Role**
-
-#### Step 1: Login as User1
-
-1. Log in to the AWS Console using **User1's credentials**.
-2. Once logged in, click on the **username** (top right) and choose **Switch Role**.
-3. In the **Switch Role** interface:
-   - **Account**: Leave this as the current AWS account.
-   - **Role name**: Enter the role name `VPCDynamoDBRole`.
-   - **Display Name**: You can set a custom name like `VPC-DynamoDB-Role`.
-4. Click **Switch Role**.
+You **should have full access** to both services.
 
 ---
 
-#### Step 2: Verify Role Access
+## ✅ Summary
 
-1. After switching the role, you should have access to the **VPC** and **DynamoDB** services in the AWS Console.
-2. Try accessing the **VPC** service to check if you can describe VPCs and verify access.
-3. Similarly, navigate to **DynamoDB** and ensure that you have complete access to the tables and can perform actions.
-
----
-
-### **Summary of Tasks Completed:**
-
-| Task                                                         | Status       |
-|--------------------------------------------------------------|--------------|
-| Created a role with access to VPCs and DynamoDB               | ✅ Completed |
-| Allowed User1 and User2 to assume the role                   | ✅ Completed |
-| Logged in as User1 and switched to the role to test access    | ✅ Completed |
-
----
-
-This setup ensures that **User1** and **User2** can have complete access to **VPCs** and **DynamoDB** by assuming the specified role. 
+| Task                         | Status     |
+|------------------------------|------------|
+| Created IAM Role             | ✅ Done    |
+| Restricted trust to 2 users  | ✅ Done    |
+| Attached correct permissions | ✅ Done    |
+| Tested with user1            | ✅ Done    |
