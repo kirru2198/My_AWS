@@ -73,6 +73,3 @@ Explanation:
 📌 *Note*: SES starts in **sandbox mode**, meaning you can only send to **verified addresses**. To send to unverified addresses, you’ll need to request **production access**.
 
 ---
-
-## Let Me Know
-Would you also like the **CloudFormation YAML template** for the FIFO queue, even though you used the console? It’s useful for reusability across environments like dev, test, and prod.
