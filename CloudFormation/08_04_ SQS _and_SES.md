@@ -47,64 +47,32 @@ Explanation:
 - You should see the message you just sent.
 ✅ FIFO queue creation and testing complete.
 
-### Part 2: Register Your Mail in SES and Send a Test Email
+---
 
-#### 1. Register Your Email Address in SES
-To use Amazon SES, you need to verify the email address you want to send emails from.
+## ✅ **Task 2: Register Your Mail in SES and Send a Test Email**
 
-1. **Verify Email in SES**:
-   You can verify your email address using the AWS Management Console or via CLI.
+### Step 1: Verify Email Address in SES
+1. Go to **Amazon SES** in the AWS Console.
+2. In the left menu, click **"Verified identities"**.
+3. Click **"Create identity"**.
+4. Choose **"Email address"**.
+5. Enter your email (e.g., `youremail@example.com`) and click **"Create identity"**.
+6. You'll receive a **verification email** at the address.
+7. Open the email and **click the verification link**.
 
-   To verify the email address using CLI:
-   ```bash
-   aws ses verify-email-identity --email-address "your-email@example.com"
-   ```
+   ✅ Once verified, SES will show your email as “Verified.”
 
-   You will receive a verification email. Once you click on the verification link, your email address will be successfully verified.
+### Step 2: Send a Test Email
+1. Go to **SES → Email test** (under "Email sending" or use the verified identity page).
+2. Choose:
+   - **From**: Your verified email
+   - **To**: Same or another verified email (if still in sandbox)
+   - Enter subject and body.
+3. Click **Send test email**.
 
-#### 2. Send a Test Email
+📌 *Note*: SES starts in **sandbox mode**, meaning you can only send to **verified addresses**. To send to unverified addresses, you’ll need to request **production access**.
 
-Once your email address is verified, you can use Amazon SES to send a test email.
+---
 
-1. **Send a Test Email Using CLI**:
-
-   First, get the region you are working in. Make sure that your SES is in the appropriate region for sending emails.
-
-   Now send an email using the following command:
-
-   ```bash
-   aws ses send-email \
-     --from "your-email@example.com" \
-     --destination "ToAddresses=recipient-email@example.com" \
-     --message "Subject={Data=Test Email,Charset=utf-8},Body={Text={Data=This is a test email sent via Amazon SES,Charset=utf-8}}"
-   ```
-
-   - Replace `"your-email@example.com"` with the verified email address you want to send from.
-   - Replace `"recipient-email@example.com"` with the recipient's email address.
-   - Modify the subject and body as needed.
-
-2. **Check the Recipient's Email**:
-   After sending the test email, check the recipient's inbox for the email.
-
-#### CloudFormation Template for SES Setup (Optional)
-
-Note: SES is typically configured manually through the AWS Console for the initial setup (email verification), but you can automate some parts of SES setup via CloudFormation. However, email sending via SES is not directly supported in CloudFormation, and it requires manual verification.
-
-Here’s an example of SES email identity verification using CloudFormation:
-
-```yaml
-AWSTemplateFormatVersion: '2010-09-09'
-Resources:
-  SESVerifiedEmail:
-    Type: AWS::SES::EmailIdentity
-    Properties:
-      EmailIdentity: "your-email@example.com"
-```
-
-However, this will only verify the email identity. Sending the email still needs to be done using the AWS CLI, SDK, or Lambda.
-
-### Final Summary
-- **SQS FIFO Queue**: We created a FIFO queue with deduplication enabled and tested it by sending a message via the AWS CLI.
-- **SES Email Registration**: We registered a verified email using AWS SES and sent a test email using the AWS CLI.
-
-This solution fulfills the requirements of deploying a FIFO SQS queue and testing it, as well as registering an email in SES and sending a test email.
+## Let Me Know
+Would you also like the **CloudFormation YAML template** for the FIFO queue, even though you used the console? It’s useful for reusability across environments like dev, test, and prod.
