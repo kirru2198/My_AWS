@@ -29,195 +29,177 @@ You work for XYZ Corporation, which is preparing to launch a new web-based appli
 
 ---
 
-To address the problem statement and the tasks listed, we can implement a solution leveraging **AWS CloudFormation** for automation, along with **Amazon EC2**, **Amazon RDS**, **Amazon Route 53**, and other services. The solution will also incorporate **IAM roles** and **security groups** to handle access and permissions. Below is a step-by-step solution breakdown.
+To meet the requirements outlined in this case study, we can use **AWS CloudFormation** to automate the provisioning of infrastructure and ensure consistent deployments. Below is a breakdown of the **multi-tier architecture solution**, including:
+
+- Networking setup
+- EC2 and RDS provisioning
+- Route 53 configuration
+- Security settings
+- Automation and RDS retention
 
 ---
 
-### **Solution Overview**
-
-1. **Web Tier (Public EC2 Instance)**
-    - Launch an EC2 instance in a **public subnet**.
-    - This EC2 instance will have a **security group** that allows **HTTP (port 80)** and **SSH (port 22)** from the internet.
-
-2. **Application Tier (Private EC2 Instance)**
-    - Launch an EC2 instance in a **private subnet** (not directly accessible from the internet).
-    - This EC2 instance will allow only **SSH access from the public subnet** of the Web Tier.
-
-3. **DB Tier (RDS MySQL Instance)**
-    - Launch an **RDS MySQL instance** in a **private subnet**.
-    - The RDS instance will allow connections only from the **private subnet** of the Application Tier on **port 3306**.
-
-4. **Route 53 Configuration**
-    - Set up a **Route 53 hosted zone** and create a DNS record to route traffic to the EC2 instance in the Web Tier.
-
-5. **Testing Automation**
-    - **CloudFormation templates** will be used to provision, configure, and update the infrastructure automatically for the development team.
-    - The team will only need to trigger the CloudFormation stack creation for the testing environment without involving system admins.
-
-6. **RDS Instance Retention**
-    - To ensure the RDS instance is retained after the stack is deleted, we'll use the `DeletionPolicy` attribute in the CloudFormation template to **retain** the RDS instance when the stack is deleted.
+## ✅ **Solution Outline**
 
 ---
 
-### **CloudFormation Template Solution**
+### 🔹 **1. VPC and Subnet Setup**
 
-Below is an example **CloudFormation template** in YAML format that will deploy the described resources:
+Create a VPC with public and private subnets across two Availability Zones (AZs) for high availability:
+
+- **Public Subnet** (for Web Tier):
+  - Route to Internet Gateway
+- **Private Subnet for App Tier**:
+  - No internet access, can access the Web Tier
+- **Private Subnet for DB Tier**:
+  - No internet access, only accessible by App Tier
+
+---
+
+### 🔹 **2. EC2 Instances**
+
+#### Web Tier (Public EC2 Instance):
+- Launch EC2 instance in the **public subnet**
+- Allow **HTTP (80)** and **SSH (22)** from the internet via a **Security Group**
+  
+#### Application Tier (Private EC2 Instance):
+- Launch EC2 instance in the **private subnet**
+- Allow **SSH** only from **Web Tier's security group**
+
+---
+
+### 🔹 **3. RDS MySQL (DB Tier)**
+
+- Launch RDS MySQL in **private subnet**
+- Set **deletion policy to "Retain"** to prevent data loss when the stack is deleted
+- Allow connections only from **App Tier subnet** on **port 3306**
+
+---
+
+### 🔹 **4. Route 53 Configuration**
+
+- Create a **Route 53 Hosted Zone**
+- Create a **record set** pointing to the **public IP or Elastic IP** of the Web Tier EC2
+
+---
+
+### 🔹 **5. Testing Automation for Development Team**
+
+Use **CloudFormation Templates** and possibly **AWS Service Catalog** to:
+
+- Allow dev team to launch testing environments quickly without sysadmin help
+- Include **user data scripts** to install web servers or application code
+- Use **Auto Scaling groups or EC2 Image Builder** if scaling or image consistency is required
+
+---
+
+### 🔹 **6. CloudFormation Template Features**
+
+- **Parameters** for customization (instance types, DB names, passwords)
+- **Security Groups** configured per tier
+- **Retention Policy** for RDS:
+  ```yaml
+  DeletionPolicy: Retain
+  ```
+- **Outputs** for public DNS, RDS endpoint, etc.
+
+---
+
+## 🛠️ CloudFormation Snippet (Example)
 
 ```yaml
-AWSTemplateFormatVersion: "2010-09-09"
-Description: Multi-Tier Web Application with Testing Environment
-
-Parameters:
-  KeyName:
-    Description: EC2 Key Pair for SSH access
-    Type: AWS::EC2::KeyPair::KeyName
-
 Resources:
 
-  # 1. Web Tier - Public EC2 Instance
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: MyVPC
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+
+  PrivateSubnetApp:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: 10.0.2.0/24
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+
+  PrivateSubnetDB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: 10.0.3.0/24
+      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+
   WebInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-0c55b159cbfafe1f0  # Example AMI ID for Amazon Linux 2 (ensure to use the correct AMI for your region)
-      SubnetId: !Ref PublicSubnetId
-      SecurityGroupIds:
-        - !Ref WebSecurityGroup
-      KeyName: !Ref KeyName
+      ImageId: ami-0abcdef1234567890
+      SubnetId: !Ref PublicSubnet
+      SecurityGroupIds: [!Ref WebSG]
+      KeyName: my-key
       Tags:
         - Key: Name
-          Value: WebTier-Instance
+          Value: WebServer
 
-  WebSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Allow HTTP and SSH from the internet
-      VpcId: !Ref VPCId
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: "80"
-          ToPort: "80"
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: "22"
-          ToPort: "22"
-          CidrIp: 0.0.0.0/0
-
-  # 2. Application Tier - Private EC2 Instance
   AppInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-0c55b159cbfafe1f0  # Example AMI ID for Amazon Linux 2
-      SubnetId: !Ref PrivateSubnetId
-      SecurityGroupIds:
-        - !Ref AppSecurityGroup
-      KeyName: !Ref KeyName
+      ImageId: ami-0abcdef1234567890
+      SubnetId: !Ref PrivateSubnetApp
+      SecurityGroupIds: [!Ref AppSG]
+      KeyName: my-key
       Tags:
         - Key: Name
-          Value: AppTier-Instance
+          Value: AppServer
 
-  AppSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Allow SSH from the Web Tier subnet
-      VpcId: !Ref VPCId
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: "22"
-          ToPort: "22"
-          CidrIp: !GetAtt WebInstance.PrivateIp
-
-  # 3. DB Tier - RDS MySQL Instance
-  MySQLDB:
+  MyRDS:
     Type: AWS::RDS::DBInstance
+    DeletionPolicy: Retain
     Properties:
-      DBInstanceIdentifier: mydb-instance
+      DBName: mydb
       AllocatedStorage: 20
-      DBInstanceClass: db.t2.micro
-      Engine: MySQL
-      EngineVersion: "8.0"
+      DBInstanceClass: db.t3.micro
+      Engine: mysql
       MasterUsername: admin
-      MasterUserPassword: password123
-      DBName: testdb
-      VPCSecurityGroups:
-        - !Ref MySQLSecurityGroup
-      DBSubnetGroupName: !Ref DBSubnetGroup
-      DeletionProtection: true
-      DeletionPolicy: Retain  # Prevent deletion of RDS when stack is deleted
+      MasterUserPassword: mypassword
+      VPCSecurityGroups: [!Ref DBSG]
+      DBSubnetGroupName: !Ref MyDBSubnetGroup
 
-  MySQLSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Allow MySQL access from App Tier
-      VpcId: !Ref VPCId
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: "3306"
-          ToPort: "3306"
-          CidrIp: !GetAtt AppInstance.PrivateIp
-
-  DBSubnetGroup:
+  MyDBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
-      DBSubnetGroupDescription: RDS Subnet Group
+      DBSubnetGroupDescription: "DB subnet group"
       SubnetIds:
-        - !Ref PrivateSubnetId
-
-  # 4. Route 53 Configuration - Hosted Zone and Record Set
-  HostedZone:
-    Type: AWS::Route53::HostedZone
-    Properties:
-      Name: example.com
-
-  DNSRecordSet:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !Ref HostedZone
-      Name: app.example.com
-      Type: A
-      TTL: 60
-      ResourceRecords:
-        - !GetAtt WebInstance.PublicIp
+        - !Ref PrivateSubnetDB
 
 Outputs:
-  WebInstancePublicIP:
-    Description: Public IP of Web Tier EC2
+  WebPublicIP:
     Value: !GetAtt WebInstance.PublicIp
-
-  DBInstanceEndpoint:
-    Description: Endpoint of MySQL DB
-    Value: !GetAtt MySQLDB.Endpoint.Address
+    Description: Public IP of Web Server
 ```
 
 ---
 
-### **Explanation of Key Components**:
+## 🧪 Testing Automation Flow
 
-1. **Web Instance (Public EC2)**:
-   - **Security Group**: Allows **HTTP (80)** and **SSH (22)** from the internet (0.0.0.0/0).
-   - **Subnet**: Launched in a **public subnet** with internet access.
-
-2. **App Instance (Private EC2)**:
-   - **Security Group**: Allows **SSH (22)** from the **public subnet**.
-   - **Subnet**: Launched in a **private subnet** with no direct internet access.
-
-3. **RDS MySQL Instance**:
-   - Launched in a **private subnet** and allows connections only from the **App Instance** on port 3306.
-   - **DeletionPolicy**: Set to **Retain** to prevent deletion when the stack is removed.
-
-4. **Route 53**:
-   - A **hosted zone** is created for the domain `example.com`, and a DNS record (`A`) points to the **Web Instance**'s public IP address.
-
-5. **Testing Automation**:
-   - CloudFormation handles the creation, updating, and deletion of resources, so the development team can focus on testing without managing infrastructure.
+1. Dev team launches CloudFormation stack via **AWS Console** or **CLI**
+2. EC2 instances auto-configure via **user-data**
+3. Route 53 updates DNS to Web Server
+4. Devs test via browser or tools
+5. Upon stack deletion, all infra is deleted **except RDS**
 
 ---
-
-### **Steps for the Development Team**:
-
-1. **Deploy the Stack**: The development team uses the provided CloudFormation template to deploy the infrastructure automatically.
-2. **Test the Application**: Once the stack is deployed, the team can test their code on the public EC2 instance without worrying about provisioning resources.
-3. **Cleanup**: When testing is complete, the team deletes the stack, but the RDS instance is retained (due to the `DeletionPolicy: Retain`), preserving the database.
-
-This solution ensures the infrastructure is fully automated and does not require system admin intervention during the testing phase.
