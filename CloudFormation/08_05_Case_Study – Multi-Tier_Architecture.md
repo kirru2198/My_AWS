@@ -29,177 +29,217 @@ You work for XYZ Corporation, which is preparing to launch a new web-based appli
 
 ---
 
-To meet the requirements outlined in this case study, we can use **AWS CloudFormation** to automate the provisioning of infrastructure and ensure consistent deployments. Below is a breakdown of the **multi-tier architecture solution**, including:
-
-- Networking setup
-- EC2 and RDS provisioning
-- Route 53 configuration
-- Security settings
-- Automation and RDS retention
+Here's a complete breakdown and solution for the **Case Study – Multi-Tier Architecture** using **AWS CloudFormation**, which automates the provisioning and configuration of infrastructure, empowering your development team to test independently of system admins.
 
 ---
 
-## ✅ **Solution Outline**
+### 🧩 **Architecture Overview**
+
+**1. Web Tier (Public Subnet)**  
+**2. App Tier (Private Subnet)**  
+**3. DB Tier (Private Subnet + RDS)**  
+**4. Route 53 for DNS Routing**  
+**5. Automation with CloudFormation**  
+**6. RDS Retention after Stack Deletion**
 
 ---
 
-### 🔹 **1. VPC and Subnet Setup**
+### ✅ **CloudFormation Template Highlights**
 
-Create a VPC with public and private subnets across two Availability Zones (AZs) for high availability:
-
-- **Public Subnet** (for Web Tier):
-  - Route to Internet Gateway
-- **Private Subnet for App Tier**:
-  - No internet access, can access the Web Tier
-- **Private Subnet for DB Tier**:
-  - No internet access, only accessible by App Tier
+We’ll split this into functional blocks:
 
 ---
 
-### 🔹 **2. EC2 Instances**
+### **1. VPC, Subnets, and Routing**
+Create a custom VPC with:
 
-#### Web Tier (Public EC2 Instance):
-- Launch EC2 instance in the **public subnet**
-- Allow **HTTP (80)** and **SSH (22)** from the internet via a **Security Group**
-  
-#### Application Tier (Private EC2 Instance):
-- Launch EC2 instance in the **private subnet**
-- Allow **SSH** only from **Web Tier's security group**
-
----
-
-### 🔹 **3. RDS MySQL (DB Tier)**
-
-- Launch RDS MySQL in **private subnet**
-- Set **deletion policy to "Retain"** to prevent data loss when the stack is deleted
-- Allow connections only from **App Tier subnet** on **port 3306**
+- 1 public subnet (for Web Tier)
+- 1 private subnet (for App Tier)
+- 1 private subnet (for DB Tier)
+- Internet Gateway for public access
+- NAT Gateway (optional but helpful for outbound internet from private tiers)
 
 ---
 
-### 🔹 **4. Route 53 Configuration**
+### **2. Security Groups**
 
-- Create a **Route 53 Hosted Zone**
-- Create a **record set** pointing to the **public IP or Elastic IP** of the Web Tier EC2
-
----
-
-### 🔹 **5. Testing Automation for Development Team**
-
-Use **CloudFormation Templates** and possibly **AWS Service Catalog** to:
-
-- Allow dev team to launch testing environments quickly without sysadmin help
-- Include **user data scripts** to install web servers or application code
-- Use **Auto Scaling groups or EC2 Image Builder** if scaling or image consistency is required
+- **Web SG**: Allow SSH (port 22) and HTTP (port 80) from anywhere (for testing only)
+- **App SG**: Allow SSH only from Web Tier subnet IP range
+- **DB SG**: Allow MySQL (port 3306) only from App Tier subnet
 
 ---
 
-### 🔹 **6. CloudFormation Template Features**
+### **3. EC2 Instances and RDS**
 
-- **Parameters** for customization (instance types, DB names, passwords)
-- **Security Groups** configured per tier
-- **Retention Policy** for RDS:
-  ```yaml
-  DeletionPolicy: Retain
-  ```
-- **Outputs** for public DNS, RDS endpoint, etc.
+- **Web EC2 Instance**: Public IP enabled, launched in Public Subnet
+- **App EC2 Instance**: No public IP, launched in Private Subnet
+- **RDS MySQL**: DeletionPolicy set to **Retain**, launched in DB Subnet
 
 ---
 
-## 🛠️ CloudFormation Snippet (Example)
+### **4. Route 53 Hosted Zone**
+
+- Create a Route 53 hosted zone
+- Associate a DNS record pointing to the Web EC2 public IP
+
+---
+
+### **5. Template Snippet – Core CloudFormation Sections**
+
+Below is a simplified version of the **CloudFormation YAML template**. The full version would include Outputs, Parameters, IAM roles, NAT gateway setup, etc.
 
 ```yaml
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Multi-Tier Architecture with Web, App, DB tiers, Route 53, and RDS Retention
+
 Resources:
 
-  MyVPC:
+  VPC:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 10.0.0.0/16
       EnableDnsSupport: true
       EnableDnsHostnames: true
-      Tags:
-        - Key: Name
-          Value: MyVPC
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
 
   PublicSubnet:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref MyVPC
       CidrBlock: 10.0.1.0/24
+      VpcId: !Ref VPC
       MapPublicIpOnLaunch: true
-      AvailabilityZone: !Select [ 0, !GetAZs '' ]
 
-  PrivateSubnetApp:
+  PrivateAppSubnet:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref MyVPC
       CidrBlock: 10.0.2.0/24
-      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      VpcId: !Ref VPC
 
-  PrivateSubnetDB:
+  PrivateDBSubnet:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref MyVPC
       CidrBlock: 10.0.3.0/24
-      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      VpcId: !Ref VPC
+
+  WebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Web Tier SG
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  AppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: App Tier SG
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 10.0.1.0/24  # Only Web Tier
+
+  DBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: DB Tier SG
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 10.0.2.0/24  # Only App Tier
 
   WebInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-0abcdef1234567890
+      ImageId: ami-0c55b159cbfafe1f0  # Update to your region
       SubnetId: !Ref PublicSubnet
-      SecurityGroupIds: [!Ref WebSG]
-      KeyName: my-key
-      Tags:
-        - Key: Name
-          Value: WebServer
+      SecurityGroupIds: [!Ref WebSecurityGroup]
 
   AppInstance:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      ImageId: ami-0abcdef1234567890
-      SubnetId: !Ref PrivateSubnetApp
-      SecurityGroupIds: [!Ref AppSG]
-      KeyName: my-key
-      Tags:
-        - Key: Name
-          Value: AppServer
+      ImageId: ami-0c55b159cbfafe1f0
+      SubnetId: !Ref PrivateAppSubnet
+      SecurityGroupIds: [!Ref AppSecurityGroup]
 
   MyRDS:
     Type: AWS::RDS::DBInstance
-    DeletionPolicy: Retain
+    DeletionPolicy: Retain  # Ensures DB is NOT deleted with stack
     Properties:
-      DBName: mydb
+      DBInstanceIdentifier: dev-db
       AllocatedStorage: 20
-      DBInstanceClass: db.t3.micro
-      Engine: mysql
+      DBInstanceClass: db.t2.micro
+      Engine: MySQL
       MasterUsername: admin
-      MasterUserPassword: mypassword
-      VPCSecurityGroups: [!Ref DBSG]
+      MasterUserPassword: MySecurePassword123
+      VPCSecurityGroups: [!Ref DBSecurityGroup]
       DBSubnetGroupName: !Ref MyDBSubnetGroup
+      PubliclyAccessible: false
+      MultiAZ: false
 
   MyDBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
     Properties:
-      DBSubnetGroupDescription: "DB subnet group"
+      DBSubnetGroupDescription: Subnet group for RDS
       SubnetIds:
-        - !Ref PrivateSubnetDB
+        - !Ref PrivateDBSubnet
 
-Outputs:
-  WebPublicIP:
-    Value: !GetAtt WebInstance.PublicIp
-    Description: Public IP of Web Server
+  HostedZone:
+    Type: AWS::Route53::HostedZone
+    Properties:
+      Name: example.com.
+
+  WebDNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: example.com.
+      Name: web.example.com.
+      Type: A
+      TTL: 300
+      ResourceRecords:
+        - !GetAtt WebInstance.PublicIp
 ```
 
 ---
 
-## 🧪 Testing Automation Flow
+### 🧪 **Automation for Developers**
 
-1. Dev team launches CloudFormation stack via **AWS Console** or **CLI**
-2. EC2 instances auto-configure via **user-data**
-3. Route 53 updates DNS to Web Server
-4. Devs test via browser or tools
-5. Upon stack deletion, all infra is deleted **except RDS**
+To allow developers to test without involving system admins:
+
+- **CloudFormation StackSets** or **Self-service Portals (like AWS Service Catalog)** can be used
+- CI/CD integration with CodePipeline and CodeBuild
+- Provide developers a **predefined CloudFormation template** so they can launch the test environment with one click via console or CLI
+- Use **Parameter Store** or **Secrets Manager** to handle credentials
+
+---
+
+### 🎯 Summary
+
+✅ Multi-tier AWS architecture  
+✅ Public Web EC2 with HTTP/SSH  
+✅ Private App EC2 with restricted SSH  
+✅ RDS in a private subnet with retained deletion policy  
+✅ Route 53 DNS setup  
+✅ Developer self-service via CloudFormation automation
 
 ---
