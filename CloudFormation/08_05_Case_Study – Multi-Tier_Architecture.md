@@ -208,6 +208,7 @@ Resources:
 
   MyDBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
+    DependsOn: MyRDS
     Properties:
       DBSubnetGroupDescription: Subnet group for RDS
       SubnetIds:
