@@ -110,6 +110,7 @@ An IPv4 address:
 
 * **Private IP** is automatically assigned from the subnet range.
 * You may choose to manually assign a specific private IP.
+ > - You can choose and set a specific private IP address yourself.
 * If the subnet is configured to auto-assign public IPs, it gets one — but it’s **not persistent**.
 
 #### Elastic IPs
