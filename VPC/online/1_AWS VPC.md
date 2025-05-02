@@ -189,6 +189,16 @@ Think of the internet at home:
 | **Security Groups**  | Acts as a virtual firewall for EC2 instances                  |
 | **Network ACLs**     | Stateless filtering at the subnet level                       |
 
+
+> In this context, **"outbound"** means:
+
+> - **Going out** from your servers to the internet — like downloading updates or accessing websites.
+
+> ### 🔁 Simplified sentence:
+
+> - **NAT Gateway** lets private subnets **connect to the internet**, but **only for sending data out**, not for receiving requests from the internet.
+
+
 ---
 
 ## 🌍 Scope of a VPC
