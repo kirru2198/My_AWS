@@ -243,6 +243,12 @@ Think of the internet at home:
   * They are global/regional services with their own internal networking.
   * You don’t associate an S3 bucket with a specific VPC.
 
+> In this context, **"associate"** means:
+> - **Link** or **connect** something to something else.
+
+> ### 🔁 Simplified sentence:
+> - You don’t **link an S3 bucket to a specific VPC** — it works separately from VPCs.
+
 ---
 
 ## 🧪 Summary
