@@ -48,7 +48,7 @@ CIDR notation defines IP address ranges:
 
 #### Subnets:
 
-* Subnet A: `10.0.0.0/28`
+* Subnet A: `10.0.0.0/28` (For the CIDR block 10.0.0.0/28, AWS allocates IP addresses from the start of the range.)
 
   * IPs: `10.0.0.0 - 10.0.0.15`
   * Usable: 11 IPs
