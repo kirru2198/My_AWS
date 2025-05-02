@@ -70,6 +70,8 @@ You're telling the **router inside the VPC**:
 | Enable internal routing | `10.0.0.0/16`                 | Allow traffic between all subnets in VPC |
 | Destination in route    | Must match the VPC's IP range | Ensures intra-VPC communication          |
 
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/b2dab40f-9ba3-4bb8-8a59-5c2378f20ab1" />
+
 ---
 
 ## 🛣 Route Tables in AWS VPC
