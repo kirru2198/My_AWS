@@ -27,6 +27,51 @@
 
 ---
 
+### ✅ Why `10.0.0.0/16` in Route Table?
+
+When you create a VPC with CIDR block `10.0.0.0/16`, it defines the **entire address space of the VPC**. This includes all subnets you create, such as:
+
+* `10.0.0.0/24` (Subnet A)
+* `10.0.1.0/24` (Subnet B)
+* Any other subnet like `10.0.2.0/24`, etc.
+
+By adding a **route rule** in the route table:
+
+```plaintext
+Destination      Target
+10.0.0.0/16      local
+```
+
+You're telling the **router inside the VPC**:
+
+> "For any traffic destined to any IP within the VPC's range (10.0.0.0 to 10.0.255.255), route it internally without going outside the VPC."
+
+---
+
+### 🔄 How It Works
+
+* **EC2-A (10.0.0.125)** wants to send traffic to **EC2-B (10.0.1.150)**.
+* The **destination IP 10.0.1.150** matches the route entry `10.0.0.0/16 → local`.
+* So, the router routes the traffic **internally**, directly to the right subnet.
+
+---
+
+### 🧠 What if You Didn’t Include It?
+
+* If there were **no such route**, or you narrowed it (e.g., only `10.0.0.0/24`), traffic to other subnets like `10.0.1.0/24` would **not be routed internally**.
+* This would **break communication** between EC2 instances in different subnets inside the same VPC.
+
+---
+
+### 🧪 In Summary:
+
+| Purpose                 | CIDR                          | Meaning                                  |
+| ----------------------- | ----------------------------- | ---------------------------------------- |
+| Enable internal routing | `10.0.0.0/16`                 | Allow traffic between all subnets in VPC |
+| Destination in route    | Must match the VPC's IP range | Ensures intra-VPC communication          |
+
+---
+
 ## 🛣 Route Tables in AWS VPC
 
 * A **route table** defines how traffic is routed within the VPC.
