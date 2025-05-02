@@ -186,20 +186,16 @@ You're telling the **router inside the VPC**:
 
 ---
 
-## 🔧 Coming Up (Lab Preview)
+🔹 **The route table must be attached to the sender's subnet** (i.e., the subnet from which the traffic originates).
 
-In the next hands-on lab:
+### Why?
 
-* Inspect the default VPC and its configuration.
-* Create a **custom VPC**:
+When an EC2 instance sends traffic, the **router looks at the route table associated with the subnet of the sender** to decide where to send the traffic.
 
-  * Define CIDR range
-  * Create public & private subnets
-  * Set up route tables
-  * Add Internet Gateway
-* Launch EC2s and test connectivity:
+### Example:
 
-  * Internal communication
-  * Internet access
+* EC2-A (10.0.0.125) in Subnet A wants to talk to EC2-B (10.0.1.150) in Subnet B.
+* The router checks the **route table attached to Subnet A** to determine how to route traffic to 10.0.1.150.
+* If that route table allows routing to 10.0.0.0/16 with target `local`, the communication works.
 
 ---
