@@ -1,18 +1,5 @@
 # 🛠️ VPC Components and Routing – Notes
 
-## 📦 What is a VPC?
-
-A **Virtual Private Cloud (VPC)** is a logically isolated network within AWS that you define and control. It includes:
-
-* Subnets
-* Route tables
-* Internet Gateway (IGW)
-* Implicit router
-* Security groups
-* Network ACLs
-
----
-
 ## 🌍 Availability Zones and Subnets
 
 * A VPC spans **multiple Availability Zones (AZs)**.
