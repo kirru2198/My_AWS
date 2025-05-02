@@ -105,6 +105,22 @@ Region
 
 ---
 
+**instances in different subnets within the same VPC can communicate with each other by default** — as long as:
+
+1. **Security group rules** allow the traffic.
+2. **Network ACLs** do not block it.
+
+### Why?
+
+* All subnets in a VPC are part of the **same private network**.
+* AWS automatically sets up **routing** between subnets in the same VPC.
+
+### Example:
+
+* EC2 in **Subnet A** can talk to EC2 in **Subnet B** — even if they're in different **Availability Zones**, as long as security rules don’t prevent it.
+
+---
+
 ## 🏛️ Classic EC2 vs VPC
 
 | Feature       | EC2-Classic (Deprecated) | VPC                   |
