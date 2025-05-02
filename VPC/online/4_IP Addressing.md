@@ -9,6 +9,8 @@
 * **Used for internal communication** within your VPC.
 * **Assigned automatically** from the CIDR block of the subnet when an instance is launched.
 * **Visible only inside the AWS network** (or extended networks via VPN/Direct Connect).
+> Visible only inside the AWS network (or private network connections).
+
 * **Example:** `10.0.0.34`, `172.31.22.10`, `192.168.1.5`
 
 **Key Uses:**
