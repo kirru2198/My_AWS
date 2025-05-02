@@ -81,6 +81,19 @@ Region
 * Controls **inbound/outbound traffic for subnets**.
 * Useful for **DDoS protection** or **blocking specific IPs**.
 
+---
+
+> ### 🚧 **Network ACL (Access Control List)**
+
+> Think of a **Network ACL** like a **security gate** at the entrance of a neighborhood (subnet).
+
+> * It **checks every vehicle (data)** coming in or going out.
+> * You can set **rules** to allow or block certain types of traffic — like saying, "Don’t let any cars with license plate starting with 123 in."
+> * It's great for blocking **bad visitors (like hackers or too many requests)** before they even reach your house (your EC2 instance).
+> * It works at the **neighborhood level (subnet)** — not just one house.
+
+---
+
 ### 🔄 Communication Rules
 
 * Instances within a VPC **can communicate** with each other **by default**.
