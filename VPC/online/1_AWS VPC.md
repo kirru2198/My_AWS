@@ -20,6 +20,8 @@ A typical AWS region (e.g., `ap-south-1` or Mumbai) has at least 3 AZs:
 
 > ⚠️ EC2 instances must be launched inside an AZ, but those AZs are part of a broader **network**.
 
+<img width="615" alt="image" src="https://github.com/user-attachments/assets/ed643539-a828-4443-b2e1-7132a33fa2cf" />
+
 ---
 
 ## 🏗️ Multi-Environment Use Case
