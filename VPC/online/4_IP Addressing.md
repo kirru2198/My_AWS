@@ -24,6 +24,7 @@
 * **Automatically assigned** if the subnet has `auto-assign public IP` enabled, or manually attached.
 * **Dynamic** — changes when instance is stopped and started unless it’s an Elastic IP.
 * **Example:** `18.191.187.21` (globally routable)
+> - Example: 18.191.187.21 (accessible from the internet).
 
 **Key Uses:**
 
