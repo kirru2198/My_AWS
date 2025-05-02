@@ -136,6 +136,18 @@ Instead of one huge flat network, Amazon allows you to create **your own isolate
 
 > A **Virtual Private Cloud** is a **logically isolated** section of the AWS cloud where you can launch AWS resources in a **defined virtual network**.
 
+
+> In this context, **"defined"** means:
+
+> - **Set up or customized by you** — you choose the settings, like the IP address range, subnets, and so on.
+
+---
+
+> ### 🔁 Simplified sentence:
+
+> - A Virtual Private Cloud is a logically isolated part of the AWS cloud where you can launch your AWS resources in a **custom-made virtual network** that you control.
+
+
 VPCs provide:
 
 * **Network segmentation** (Dev, QA, Prod)
