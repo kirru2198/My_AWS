@@ -205,6 +205,14 @@ Think of the internet at home:
 > ### 🔁 Simplified sentence:
 > - NAT Gateway lets private subnets **use the internet**, but they **can’t receive any requests or connections from the internet**.
 
+---
+
+> **"This means a server in a private subnet can access the internet through a NAT Gateway, but no one can directly connect to that server from the internet."**
+
+> It clearly explains:
+
+> - * ✅ The server can **go out to the internet**
+> - * ❌ But the internet **can’t reach in to the server**
 
 ---
 
