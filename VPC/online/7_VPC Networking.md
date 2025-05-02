@@ -144,6 +144,7 @@ You're telling the **router inside the VPC**:
 
 * All subnets share the **main route table**.
 * Modifying the main route table affects **all subnets**.
+> Modifying the main route table changes the routing for all subnets linked to it.
 
 ### To Separate:
 
