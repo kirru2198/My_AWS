@@ -34,6 +34,7 @@
 
   * An EC2 instance needs to be accessed from the internet.
   * You are hosting a public-facing service (e.g., web server).
+  > - You are hosting a service anyone can access (e.g., web server).
 
 #### 🔸 **Elastic IP Address (EIP)**
 
