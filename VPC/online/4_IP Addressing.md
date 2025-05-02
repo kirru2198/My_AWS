@@ -47,6 +47,7 @@
 **Use Case:**
 
 * Applications requiring **consistent** IP address (e.g., DNS entries, firewall rules, external APIs).
+> Applications requiring a fixed IP address (e.g., DNS entries, firewall rules, external APIs).
 
 ---
 
