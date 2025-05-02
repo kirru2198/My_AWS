@@ -7,6 +7,11 @@
 * A **VPC spans across all AZs** in a region.
 * However, a VPC only takes a **portion** of each AZ (not the entire AZ) — like slicing a big pie into small virtual slices.
 
+> The word **"redundant"** in this context means **"backup systems"** or **"extra systems for reliability."**
+
+> So the simplified sentence would be:
+> - Each Availability Zone is a group of one or more data centers with **backup power, networking, and connectivity systems** to ensure high availability.
+
 ---
 
 ## 🚀 Why VPC is Important?
