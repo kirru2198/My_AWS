@@ -66,6 +66,7 @@ Each environment will have its own EC2 instances:
 * 3 for Prod
 
 The issue is: **without isolation**, these environments can accidentally access each other, leading to security risks.
+> సమస్య ఏమిటంటే: ఒంటరిగా లేకుండా, ఈ వాతావరణాలు అనుకోకుండా ఒకదానికొకటి ప్రవేశించగలవు, ఇది భద్రతా ప్రమాదాలకు దారితీస్తుంది.
 
 ---
 
