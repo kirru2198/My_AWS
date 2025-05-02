@@ -155,6 +155,18 @@ VPCs provide:
 * **Simplified security management**
 * **Control over IP ranges, route tables, gateways, and more**
 
+> In this context, **"control"** means:
+
+> - You can **choose, change, and manage** how things work.
+
+---
+
+> ### 🔁 Simplified sentence:
+
+> - You can **choose and manage** things like IP address ranges, route tables, gateways, and more.
+
+---
+
 ### 🏘️ Analogy
 
 Think of the internet at home:
