@@ -76,13 +76,52 @@ You could:
 
 * Use **Security Groups** to control access (e.g., restrict SSH by source IP)
 * But managing SGs for **every instance** is difficult and error-prone.
+> కానీ **ప్రతి సందర్భానికి** SG లను నిర్వహించడం కష్టం మరియు దోషాలకు దారితీస్తుంది.
+
+<img width="606" alt="image" src="https://github.com/user-attachments/assets/1975ff69-f621-449d-b025-3f49cf553a2e" />
+
 
 Imagine if you had:
 
 * 10–20+ instances per environment
 * Maintaining fine-grained access would be complex!
+> సూక్ష్మ-కణిత ప్రాప్యతను నిర్వహించడం సంక్లిష్టంగా ఉంటుంది!
 
 ---
+
+> ## 🔐 The Problem with Using Only Security Groups
+
+> **Security Groups** in AWS are like **door locks** for your servers (EC2 instances).
+You can use them to say things like:
+
+> - “Only allow people from this IP to open the door (connect via SSH).”
+
+> This works fine when you have **just a few servers**.
+
+---
+
+> ### 🚧 But here’s the problem...
+
+> Imagine you have:
+
+> * **10–20 servers** just for development,
+> * Another 10 for testing,
+> * And 10 more for production...
+
+> Now you have to:
+
+> * Set up locks (security groups) for **every single server**
+> * Make sure the right people have access to the right ones
+> * Constantly update or fix them if teams or rules change
+
+> - ⚠️ That’s a **lot of work** and very easy to mess up — especially in big projects.
+
+---
+
+> ### 💡 That’s why using **VPCs** (to group and isolate environments) is much **easier and safer** than setting up individual locks everywhere.
+
+---
+
 
 ## 💡 Amazon’s Solution: VPC
 
