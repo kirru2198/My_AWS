@@ -15,6 +15,9 @@
 
 * Connecting EC2 instances to each other within a VPC.
 * Accessing internal databases, caches, etc., without going over the internet.
+> - "Accessing internal databases, local storage or temporary storage, etc., without going over the internet."
+
+
 
 #### 🔸 **Public IP Address**
 
