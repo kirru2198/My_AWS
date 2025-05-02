@@ -39,6 +39,7 @@
 #### 🔸 **Elastic IP Address (EIP)**
 
 * A **static public IP address** that you reserve in your AWS account.
+> - A static public IP address that you set aside in your AWS account.
 * Can be **attached to and detached** from EC2 instances as needed.
 * You are **charged** for it when it’s **not associated** with a running instance.
 
