@@ -12,6 +12,8 @@ As we began using **EC2 instances**, **Auto Scaling Groups (ASG)**, and **Elasti
 
 A typical AWS region (e.g., `ap-south-1` or Mumbai) has at least 3 AZs:
 
+<img width="320" alt="image" src="https://github.com/user-attachments/assets/9b1057a7-ba5e-4199-8036-f5947d330940" />
+
 * `az-a`
 * `az-b`
 * `az-c`
