@@ -262,15 +262,3 @@ Think of the internet at home:
 * Essential for **interviews**, **real deployments**, and **network planning**
 
 ---
-
-## 🔜 What's Next?
-
-In the upcoming sessions, we’ll explore:
-
-* **VPC components** in depth (subnets, route tables, etc.)
-* **Public vs Private subnets**
-* **VPC Peering**
-* **Security group vs NACL**
-* **Hands-on labs**
-
----
