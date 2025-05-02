@@ -6,14 +6,6 @@ This session covered the AWS **Virtual Private Cloud (VPC)** in detail, focusing
 
 ---
 
-## 🧑‍🏫 **Key Administrative Notes**
-
-* The webinar platform is in **listen-only mode** — participants cannot unmute or share screens.
-* The instructor recommended **Zoom**, but the platform switch was an **organizational decision**.
-* Students are encouraged to **report issues** (e.g., chat disabled, recordings not working).
-
----
-
 ## 🌐 **What is a VPC?**
 
 > A **Virtual Private Cloud (VPC)** is a private, isolated network in the AWS cloud where you can launch AWS resources securely.
