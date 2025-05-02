@@ -199,6 +199,13 @@ Think of the internet at home:
 > - **NAT Gateway** lets private subnets **connect to the internet**, but **only for sending data out**, not for receiving requests from the internet.
 
 
+> In this context, **"sending data out"** means:
+> - The server can **use the internet**, like opening websites, downloading files, or calling APIs.
+
+> ### 🔁 Simplified sentence:
+> - NAT Gateway lets private subnets **use the internet**, but they **can’t receive any requests or connections from the internet**.
+
+
 ---
 
 ## 🌍 Scope of a VPC
