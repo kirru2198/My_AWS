@@ -126,6 +126,11 @@ You can use them to say things like:
 ## 💡 Amazon’s Solution: VPC
 
 Instead of one huge flat network, Amazon allows you to create **your own isolated networks**, called **VPCs**.
+> In this context, the word "flat" means:
+> - A single, open network where everything can see and talk to everything else — like one big room with no walls or boundaries.
+
+> 🔁 Simplified sentence:
+> - Instead of one big open network where all resources can talk to each other, Amazon lets you create your own separate, private networks called VPCs.
 
 ### ✅ What is a VPC?
 
