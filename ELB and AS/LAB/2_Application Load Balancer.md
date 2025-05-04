@@ -17,3 +17,19 @@
 <img width="959" alt="image" src="https://github.com/user-attachments/assets/4a459d4f-4428-43a8-9413-efeec0a85e3d" />
 
 <img width="959" alt="image" src="https://github.com/user-attachments/assets/f6504954-2b06-4f88-aa1c-29216e20b0dc" />
+
+### Configuring the Target Groups
+
+Click on Craete Target Group 
+
+<img width="955" alt="image" src="https://github.com/user-attachments/assets/5a6b5315-c15e-404a-96c5-60e5af2df603" />
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/32535c2d-771c-4178-8812-0ae2c85e5291" />
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/a1c8e4b2-348e-4376-b3a1-4fa66a7ecc08" />
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/39500cf4-5601-4513-b00f-caf81f9670c6" />
+
+<img width="959" alt="image" src="https://github.com/user-attachments/assets/6a9cf3d1-2a9d-4f4a-af36-926914b3bc35" />
+
+
