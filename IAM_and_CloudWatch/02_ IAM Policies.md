@@ -9,17 +9,19 @@ You work for XYZ Corporation. To maintain the security of the AWS account and th
 **Tasks to be Performed:**
 
 1. Create Policy Number 1 which lets the users:
+
    a. Access S3 completely  
    b. Only create EC2 instances  
    c. Full access to RDS  
 
-2. Create Policy Number 2 which allows the users to:
-   a. Access CloudWatch and billing completely  
+3. Create Policy Number 2 which allows the users to:
+
+    a. Access CloudWatch and billing completely  
    b. Can only list EC2 and S3 resources  
 
-3. Attach Policy Number 1 to the Dev Team from Task 1.
+5. Attach Policy Number 1 to the Dev Team from Task 1.
 
-4. Attach Policy Number 2 to the Ops Team from Task 1.
+6. Attach Policy Number 2 to the Ops Team from Task 1.
 
 ---
 
