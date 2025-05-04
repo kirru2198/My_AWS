@@ -34,4 +34,6 @@ Click on Craete Target Group
 
 <img width="959" alt="image" src="https://github.com/user-attachments/assets/76a9267a-56ae-46d7-a01b-eada4ee0e8e2" />
 
+<img width="956" alt="image" src="https://github.com/user-attachments/assets/edf26f78-51fb-49ad-9c6d-06b665b7f4c8" />
+
 
