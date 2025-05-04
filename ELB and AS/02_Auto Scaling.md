@@ -28,10 +28,10 @@ To solve the problem where XYZ Corporation is looking to move its infrastructure
 4. **Install Apache Web Server**:
    Run the following commands to install and start the Apache web server:
    ```bash
-   sudo yum update -y
-   sudo yum install -y httpd
-   sudo systemctl start httpd
-   sudo systemctl enable httpd
+   sudo apt update -y
+   sudo apt install -y apache2
+   sudo systemctl start apache2
+   sudo systemctl enable apache2
    ```
 
 5. **Verify Apache is Working**:
