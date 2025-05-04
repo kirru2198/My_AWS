@@ -35,7 +35,7 @@ To address the problem statement where XYZ Corporation wants to move its infrast
    sudo yum install -y httpd
    sudo service httpd start
    sudo chkconfig httpd on
-   echo "Web Page 1" > /var/www/html/index.html
+   echo "<h1>This is Web Server 1</h1>" | sudo tee /var/www/html/index.html
    ```
 
    For other instances, repeat the above steps with different content in the `index.html` file (e.g., "Web Page 2" for the second instance and "Web Page 3" for the third one).
